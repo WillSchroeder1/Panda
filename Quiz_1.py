@@ -1,36 +1,39 @@
 import pandas as pd
 
-file_object = open ('Holiday Schedule Ranking 2019.csv','r')
+file_object = open ('Holiday_Schedule_Ranking_2019.csv','r')
 
 data = pd.read_csv(file_object, index_col = 0).T
 
-print(data)
+#print(data)
 
 file_object.close()
 
-file_object = open('Holiday Schedule Ranking 2019.csv', 'r')
+file_object = open('Holiday_Schedule_Ranking_2019.csv', 'r')
 
 schedule = pd.read_csv(file_object, index_col = 0)
 
 for c in schedule.columns:
     schedule[c].values[:] = 0
 
-print(schedule)
+#print(schedule)
 
 data["col_sum"] = data.apply(lambda x:x.sum(), axis = 1)
 
-print(data)
+#print(data)
 
 data = data.sort_values(by="col_sum", ascending = False)
 
 data = data.T
 
-print(data)
+##print(data)
 
-for date in data.Columns:
+for date in data.columns:
+    date_series = data[date].nsmallest(13,keep='all')
+    for emp in date_series.index.values:
+        pref = data[date].loc[emp]
+        if ((schedule[date].sum() < 3) and (schedule.loc[emp].sum() < 2)):
+            schedule.loc[emp][date] = pref
 
-    date_series = data[date].nsmallest(5,keep='all')
-    slot_count = 0
 
 #if statement saying tp skip someone after 2 days
 #slots arent above 3
